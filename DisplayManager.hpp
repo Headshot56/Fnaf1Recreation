@@ -277,7 +277,6 @@ class DisplayManager{
         }
 
         void Draw(){
-            
             if (currentScreen == "office"){OfficeDraw();}
             if (currentScreen == "cameras"){CameraDraw();}
             if (currentScreen == "menu"){MenuDraw();}
