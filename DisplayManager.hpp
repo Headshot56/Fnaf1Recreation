@@ -50,8 +50,6 @@ class DisplayManager{
             animations[2].Stop(); //Left door animation
             animations[3].Stop(); //Cam flip animation
             animations[4].Stop(); //Cam static animation
-            animations[3].inWorld = false; //Cam flip shouldnt be affected by camera position
-            animations[4].inWorld = false; //Cam static shouldnt be affected by camera position
         }
 
         ~DisplayManager(){
@@ -179,7 +177,6 @@ class DisplayManager{
                     }
                     animations[0].Play(true);
                     StopSound(cameraLoopSound);
-                    StopSound(camOpeningNoise); //Fast closing and opening of cams causes noise to play in office
                     SetSoundVolume(officeAmbience[currentAmbience], 1);
                     currentScreen = "office";
                 }
@@ -222,22 +219,10 @@ class DisplayManager{
             }
             EndMode2D();
             buttons.Draw();
-
-            //Draw these animations here since draw order matters
-            animations[1].Draw(); //Right door
-            animations[2].Draw(); //Left door
-
-            //Cam bar is too big at lower resolutions but the aspect ratio is already fucked for every texture so whatever
-            //Might end up scrapping the variable screen sizes idea and force aspect ratio or specific resolution later
-            //Im starting to see why the original fnaf games were locked to their resolutions
             DrawTexture(camBar, screenWidth/2-300, screenHeight-60, WHITE);
         }
 
         void CameraDraw(){
-            //scale camera static to fit screen
-            float scaleX = screenWidth / 1280; //magic number bad but 1280x720 is the resolution the static was made in
-            animations[4].scale = scaleX;
-
             if (animations[4].playing == false && animations[3].playing == false){
                 animations[4].Play(true);
             }
@@ -277,15 +262,11 @@ class DisplayManager{
         }
 
         void Draw(){
-            
             if (currentScreen == "office"){OfficeDraw();}
             if (currentScreen == "cameras"){CameraDraw();}
             if (currentScreen == "menu"){MenuDraw();}
-            //Current issue im facing is that most but not all animations need to be drawn over everything so I might have to manually
-            //draw each animation in the right order instead of looping through them all
+
             for (int i = 0; i < (int)animations.size(); i++){
-                //Bad fix but ignore door animations in this loop since they are drawn in office draw
-                if (i == 1 || i == 2){continue;}
                 animations[i].Draw();
             }
         }
