@@ -1,5 +1,5 @@
-float screenWidth = 1280/2;
-float screenHeight = 720/2;
+float screenWidth = 1280;
+float screenHeight = 720;
 #include <raylib.h>
 #include "DisplayManager.hpp"
 
@@ -33,7 +33,7 @@ int main(){
         screenHeight = (float)GetScreenHeight();
 
         // Calculate zoom factor
-        float zoomFactorX = screenWidth / 800; //Magic number but what can i do to try and make it fit all screen sizes?
+        float zoomFactorX = screenWidth / 800;
         float zoomFactorY = screenHeight / 720;
         camera.zoom = (zoomFactorX < zoomFactorY) ? zoomFactorX : zoomFactorY;
 

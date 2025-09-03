@@ -7,14 +7,14 @@ class Animation {
     private:
         int frameCount;
         float duration;
+        float rotation;
+        float scale;
         int currentDrawFrameIndex = 0;
         double lastFrameTime;
         float timeBetweenFrames;
         bool isLooping;
         Camera2D* camera;
     public:
-        float rotation;
-        float scale;
         bool playing = true;
         bool isReverse = false;
         bool inWorld = true;
