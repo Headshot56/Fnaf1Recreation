@@ -232,8 +232,8 @@ class DisplayManager{
             animations[1].Draw(); //Right door
             animations[2].Draw(); //Left door
 
-            //Cam bar is too big at lower resolutions but i cant be fucked to fix it right now. Not a priority
-            DrawTexture(camBar, screenWidth/2-300, screenHeight-60, WHITE);
+            //Draw cambar
+            DrawTextureEx(camBar, Vector2{screenWidth/2-(camBar.width*camera->zoom)/2, screenHeight-60}, 0.0f, camera->zoom, WHITE);
         }
 
         void CameraDraw(){
@@ -292,5 +292,4 @@ class DisplayManager{
                 animations[i].Draw();
             }
         }
-
 };
