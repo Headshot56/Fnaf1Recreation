@@ -51,7 +51,6 @@ class DisplayManager{
             animations[2].Stop(); //Left door animation
             animations[3].Stop(); //Cam flip animation
             animations[4].Stop(); //Cam static animation
-            animations[3].inWorld = false; //Cam flip shouldnt be affected by camera position
             animations[4].inWorld = false; //Cam static shouldnt be affected by camera position
         }
 
@@ -293,4 +292,5 @@ class DisplayManager{
                 animations[i].Draw();
             }
         }
+
 };
