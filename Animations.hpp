@@ -7,14 +7,14 @@ class Animation {
     private:
         int frameCount;
         float duration;
-        float rotation;
-        float scale;
         int currentDrawFrameIndex = 0;
         double lastFrameTime;
         float timeBetweenFrames;
         bool isLooping;
         Camera2D* camera;
     public:
+        float rotation;
+        float scale;
         bool playing = true;
         bool isReverse = false;
         bool inWorld = true;
@@ -97,7 +97,7 @@ class DoorButtons{
         };
         Vector2 leftDoorButtonPos = {0, 200};
         Vector2 rightDoorButtonPos = {1500, 200};
-        
+
         float doorButtonSize = 60;
         Vector2 rDoorOff = {15, 50};
         Vector2 lDoorOff = {25, 50};
@@ -106,7 +106,7 @@ class DoorButtons{
         Rectangle rightDoor_LightButton = Rectangle{rightDoorButtonPos.x + rDoorOff.x, rightDoorButtonPos.y + rDoorOff.y + rightDoor_DoorButton.height + buttonGap, doorButtonSize, doorButtonSize};
         Rectangle leftDoor_DoorButton = Rectangle{leftDoorButtonPos.x + lDoorOff.x, leftDoorButtonPos.y + lDoorOff.y, doorButtonSize, doorButtonSize};
         Rectangle leftDoor_LightButton = Rectangle{leftDoorButtonPos.x + lDoorOff.x, leftDoorButtonPos.y + lDoorOff.y + leftDoor_DoorButton.height + buttonGap, doorButtonSize, doorButtonSize};
-        
+
     public:
         Sound lightNoise = LoadSound("res/aud/BallastHumMedium2.wav");
         Camera2D *camera;
