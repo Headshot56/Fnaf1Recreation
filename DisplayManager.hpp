@@ -102,8 +102,11 @@ class DisplayManager{
             if (camera->target.x < 0){
                 camera->target.x = 0;
             }
-            else if (camera->target.x + screenWidth > 1550*camera->zoom){
-                camera->target.x = (1550*camera->zoom)-screenWidth;
+            // Clamp side to side movement in a way that works with different screen sizes
+            float maxCamX = abs(officeBG.width - screenWidth);
+            if (maxCamX < 0) maxCamX = 0;
+            if (camera->target.x > maxCamX){
+                camera->target.x = maxCamX;
             }
 
             int pRButton = buttons.rightDoorToggles.x;

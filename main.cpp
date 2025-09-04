@@ -1,5 +1,7 @@
 float screenWidth = 1280;
 float screenHeight = 720;
+float zoomFactorX;
+float zoomFactorY;
 #include <raylib.h>
 #include "DisplayManager.hpp"
 
@@ -30,10 +32,11 @@ int main(){
     SetMousePosition(screenWidth/2, screenHeight/2);
     while (!WindowShouldClose()) {
         screenWidth = (float)GetScreenWidth();
-        screenHeight = (float)GetScreenHeight();
+        int aspectFactor = screenWidth/16;
+        screenHeight = aspectFactor*9;
 
         // Calculate zoom factor
-        float zoomFactorX = screenWidth / 800;
+        float zoomFactorX = screenWidth / 1280;
         float zoomFactorY = screenHeight / 720;
         camera.zoom = (zoomFactorX < zoomFactorY) ? zoomFactorX : zoomFactorY;
 
@@ -47,6 +50,7 @@ int main(){
         // DrawText(TextFormat("%i, %i", (int)mPos.x, (int)mPos.y), 0, 0, 24, WHITE);
         // DrawText(TextFormat("Zoom:%f", camera.zoom), 0, 24, 24, WHITE);
         // DrawText(TextFormat("%f", camera.target.x), 0, 44, 24, WHITE);
+        // DrawText(TextFormat("%f", (float)GetScreenWidth()), 0, 70, 24, WHITE);
         EndDrawing();
     }
     CloseWindow();
