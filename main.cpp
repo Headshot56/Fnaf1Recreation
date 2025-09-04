@@ -56,9 +56,9 @@ int main(){
         manager.Draw();
         // Vector2 mPos = GetScreenToWorld2D(GetMousePosition(), camera);
         // DrawText(TextFormat("%i, %i", (int)mPos.x, (int)mPos.y), 0, 0, 24, WHITE);
-        DrawText(TextFormat("Zoom:%f", camera.zoom), 0, 24, 24, WHITE);
-        DrawText(TextFormat("%f", camera.target.x), 0, 44, 24, WHITE);
-        DrawText(TextFormat("%f", (float)GetScreenWidth()), 0, 70, 24, WHITE);
+        // DrawText(TextFormat("Zoom:%f", camera.zoom), 0, 24, 24, WHITE);
+        // DrawText(TextFormat("%f", camera.target.x), 0, 44, 24, WHITE);
+        // DrawText(TextFormat("%f", (float)GetScreenWidth()), 0, 70, 24, WHITE);
         EndDrawing();
     }
     CloseWindow();
