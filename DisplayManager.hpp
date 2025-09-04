@@ -28,6 +28,7 @@ class DisplayManager{
         bool touchingCamButton = false;
         bool wantToSwap = false;
         int menuScreen = GetRandomValue(0, menuScreens.size()-1);
+        int currentStinger = 0;
     public:
         std::vector<Animation> animations;
 
@@ -102,11 +103,12 @@ class DisplayManager{
             if (camera->target.x < 0){
                 camera->target.x = 0;
             }
-            // Clamp side to side movement in a way that works with different screen sizes
-            float maxCamX = abs(officeBG.width - screenWidth);
-            if (maxCamX < 0) maxCamX = 0;
-            if (camera->target.x > maxCamX){
-                camera->target.x = maxCamX;
+
+            // Clamp side to side movement in a way that works with different screen sizes and camera zoom
+            float visibleWidth = screenWidth / camera->zoom;
+            float maxTargetX = officeBG.width - visibleWidth;
+            if (camera->target.x > maxTargetX){
+                camera->target.x = maxTargetX;
             }
 
             int pRButton = buttons.rightDoorToggles.x;
@@ -159,6 +161,7 @@ class DisplayManager{
                 animations[2].Stop();
                 StopSound(fanNoise);
                 SetSoundVolume(officeAmbience[currentAmbience], 0.2); //Can still hear bg audio over cams but quieter
+                SetSoundVolume(stingers[currentStinger], 0.2);
                 currentScreen = "cameras";
                 wantToSwap = false;
             }
@@ -230,9 +233,7 @@ class DisplayManager{
             animations[1].Draw(); //Right door
             animations[2].Draw(); //Left door
 
-            //Cam bar is too big at lower resolutions but the aspect ratio is already fucked for every texture so whatever
-            //Might end up scrapping the variable screen sizes idea and force aspect ratio or specific resolution later
-            //Im starting to see why the original fnaf games were locked to their resolutions
+            //Cam bar is too big at lower resolutions but i cant be fucked to fix it right now. Not a priority
             DrawTexture(camBar, screenWidth/2-300, screenHeight-60, WHITE);
         }
 
@@ -260,7 +261,8 @@ class DisplayManager{
         void Update(){
             //randomly play spooky sounds
             if (GetRandomValue(0, GetFPS()*60) == 1){
-                PlaySound(stingers[GetRandomValue(0, stingers.size()-1)]);
+                currentStinger = GetRandomValue(0, stingers.size()-1);
+                PlaySound(stingers[currentStinger]);
             }
 
             if (currentScreen == "office"){OfficeUpdate();}
