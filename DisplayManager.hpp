@@ -6,16 +6,12 @@
 
 class DisplayManager{
     private:
-        std::string currentScreen = "menu"; //menu, office, cameras
-        float turnSpeed;
         Texture officeBG = LoadTexture("./res/tex/OfficeBG.png");
         Texture officeLeftLightBG = LoadTexture("res/tex/leftLight.png");
         Texture officeRightLightBG = LoadTexture("res/tex/rightLight.png");
         Texture camBar = LoadTexture("res/tex/camBar.png");
         std::vector<Texture> menuScreens = {LoadTexture("res/tex/menuScreen1.png"), LoadTexture("res/tex/menuScreen2.png"), LoadTexture("res/tex/menuScreen3.png"), LoadTexture("res/tex/menuScreen4.png")};
         std::vector<Texture> menuText = {LoadTexture("res/tex/newGame.png"), LoadTexture("continue.png"), LoadTexture("fnafTitle.png")};
-        Camera2D* camera;
-        DoorButtons buttons;
         Sound boopNoise = LoadSound("res/aud/boop.wav");
         Sound fanNoise = LoadSound("res/aud/Buzz_Fan_Florescent2.wav");
         Sound camOpeningNoise = LoadSound("res/aud/CAMERA_VIDEO_LOA_60105303.wav");
@@ -24,6 +20,10 @@ class DisplayManager{
         Sound menuMusic = LoadSound("res/aud/darkness music.wav");
         std::vector<Sound> officeAmbience = {LoadSound("res/aud/ambience2.wav"), LoadSound("res/aud/ColdPresc B.wav"), LoadSound("res/aud/EerieAmbienceLargeSca_MV005.wav")};
         std::vector<Sound> stingers = {LoadSound("res/aud/circus.wav"), LoadSound("res/aud/pirate song2.wav"), LoadSound("res/aud/Laugh_Giggle_Girl_1.wav")};
+        std::string currentScreen = "menu"; //menu, office, cameras
+        float turnSpeed;
+        Camera2D* camera;
+        DoorButtons buttons;
         int currentAmbience = GetRandomValue(0, officeAmbience.size()-1);
         bool touchingCamButton = false;
         bool wantToSwap = false;

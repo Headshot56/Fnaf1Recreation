@@ -8,10 +8,9 @@ int aspectFactor = screenWidth/16;
 
 int main(){
     const int turnSpeed = 350;
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "Five Guys in Freddy");
     InitAudioDevice();
-    SetTargetFPS(GetMonitorRefreshRate(0));
     Image icon = LoadImage("res/tex/freddyIcon.png");
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -39,9 +38,24 @@ int main(){
 
     SetMousePosition(screenWidth/2, screenHeight/2);
     while (!WindowShouldClose()) {
-        screenWidth = (float)GetScreenWidth();
-        aspectFactor = screenWidth/16; //This singular change will prevent me from killing myself before I turn 25
-        screenHeight = aspectFactor*9;
+        if (IsKeyPressed(KEY_F11)){
+            if (!IsWindowFullscreen()){
+                int mon = GetCurrentMonitor();
+                int monWidth = GetMonitorWidth(mon);
+                int monHeight = GetMonitorHeight(mon);
+                SetWindowSize(monWidth, monHeight);
+            }
+            ToggleFullscreen();
+            screenWidth = (float)GetScreenWidth();
+            aspectFactor = floor(screenWidth/16);
+            screenHeight = aspectFactor*9;
+        }
+        else if (IsWindowResized()){
+            screenWidth = (float)GetScreenWidth();
+            aspectFactor = floor(screenWidth/16); //This singular change will prevent me from killing myself before I turn 25
+            screenHeight = aspectFactor*9;
+            SetWindowSize(screenWidth, screenHeight);
+        }
 
         // Calculate zoom factor
         float zoomFactorX = screenWidth / 1280; //Game is designed for 720p but should scale to other 16:9 resolutions
