@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Animations.hpp"
+#include "Ai.hpp"
 
 class DisplayManager{
     private:
@@ -11,7 +12,11 @@ class DisplayManager{
         Texture officeRightLightBG = LoadTexture("res/tex/rightLight.png");
         Texture camBar = LoadTexture("res/tex/camBar.png");
         std::vector<Texture> menuScreens = {LoadTexture("res/tex/menuScreen1.png"), LoadTexture("res/tex/menuScreen2.png"), LoadTexture("res/tex/menuScreen3.png"), LoadTexture("res/tex/menuScreen4.png")};
-        std::vector<Texture> menuText = {LoadTexture("res/tex/newGame.png"), LoadTexture("continue.png"), LoadTexture("fnafTitle.png")};
+        std::vector<Texture> cameraScreens = { //The terrible, evil, no good, very bad, horrendous, big, fat, list with all of the textures for every camera shittily organized
+            LoadTexture("res/tex/ShowStageReg.png"),
+            LoadTexture("res/tex/ShowStageSecret.png")
+        };
+        std::vector<Texture> menuText = {LoadTexture("res/tex/newGame.png"), LoadTexture("res/tex/continue.png"), LoadTexture("res/tex/fnafTitle.png"), LoadTexture("res/tex/copyright.png")};
         Sound boopNoise = LoadSound("res/aud/boop.wav");
         Sound fanNoise = LoadSound("res/aud/Buzz_Fan_Florescent2.wav");
         Sound camOpeningNoise = LoadSound("res/aud/CAMERA_VIDEO_LOA_60105303.wav");
@@ -29,6 +34,7 @@ class DisplayManager{
         bool wantToSwap = false;
         int menuScreen = GetRandomValue(0, menuScreens.size()-1);
         int currentStinger = 0;
+        bool staticPlayed = false;
     public:
         std::vector<Animation> animations;
 
@@ -38,9 +44,9 @@ class DisplayManager{
             buttons.camera = camera;
             std::vector<std::string> fanFrames = {"res/tex/fan#1.png", "res/tex/fan#2.png", "res/tex/fan#3.png"};
             animations.emplace_back(Animation{camera, Vector2{780, 303}, 0.15, fanFrames, true});
-            std::vector<std::string> rDoorFrames = {"res/tex/Rdoor#1.png", "res/tex/Rdoor#2.png", "res/tex/Rdoor#3.png", "res/tex/Rdoor#4.png", "res/tex/Rdoor#5.png", "res/tex/Rdoor#6.png", "res/tex/Rdoor#7.png", "res/tex/Rdoor#8.png", "res/tex/Rdoor#9.png", "res/tex/Rdoor#10.png", "res/tex/Rdoor#11.png", "res/tex/Rdoor#12.png", "res/tex/Rdoor#13.png", "res/tex/Rdoor#14.png", "res/tex/Rdoor#15.png", "res/tex/Rdoor#16.png", };
+            std::vector<std::string> rDoorFrames = {"res/tex/Rdoor#1.png", "res/tex/Rdoor#2.png", "res/tex/Rdoor#3.png", "res/tex/Rdoor#4.png", "res/tex/Rdoor#5.png", "res/tex/Rdoor#6.png", "res/tex/Rdoor#7.png", "res/tex/Rdoor#8.png", "res/tex/Rdoor#9.png", "res/tex/Rdoor#10.png", "res/tex/Rdoor#11.png", "res/tex/Rdoor#12.png", "res/tex/Rdoor#13.png", "res/tex/Rdoor#14.png", "res/tex/Rdoor#15.png", "res/tex/Rdoor#16.png"};
             animations.emplace_back(Animation{camera, Vector2{1275, 0}, 0.5, rDoorFrames, false});
-            std::vector<std::string> lDoorFrames = {"res/tex/Ldoor#1.png", "res/tex/Ldoor#2.png", "res/tex/Ldoor#3.png", "res/tex/Ldoor#4.png", "res/tex/Ldoor#5.png", "res/tex/Ldoor#6.png", "res/tex/Ldoor#7.png", "res/tex/Ldoor#8.png", "res/tex/Ldoor#9.png", "res/tex/Ldoor#10.png", "res/tex/Ldoor#11.png", "res/tex/Ldoor#12.png", "res/tex/Ldoor#13.png", "res/tex/Ldoor#14.png", "res/tex/Ldoor#15.png", "res/tex/Ldoor#16.png", };
+            std::vector<std::string> lDoorFrames = {"res/tex/Ldoor#1.png", "res/tex/Ldoor#2.png", "res/tex/Ldoor#3.png", "res/tex/Ldoor#4.png", "res/tex/Ldoor#5.png", "res/tex/Ldoor#6.png", "res/tex/Ldoor#7.png", "res/tex/Ldoor#8.png", "res/tex/Ldoor#9.png", "res/tex/Ldoor#10.png", "res/tex/Ldoor#11.png", "res/tex/Ldoor#12.png", "res/tex/Ldoor#13.png", "res/tex/Ldoor#14.png", "res/tex/Ldoor#15.png", "res/tex/Ldoor#16.png"};
             animations.emplace_back(Animation{camera, Vector2{75, 0}, 0.5, lDoorFrames, false});
             std::vector<std::string> camFlipFrames = {"res/tex/camFlip#1.png", "res/tex/camFlip#2.png", "res/tex/camFlip#3.png", "res/tex/camFlip#4.png", "res/tex/camFlip#5.png", "res/tex/camFlip#6.png", "res/tex/camFlip#7.png", "res/tex/camFlip#8.png", "res/tex/camFlip#9.png", "res/tex/camFlip#10.png", "res/tex/camFlip#11.png"};
             animations.emplace_back(Animation{camera, Vector2{0, 0}, 0.25, camFlipFrames, false});
@@ -52,6 +58,8 @@ class DisplayManager{
             animations[3].Stop(); //Cam flip animation
             animations[4].Stop(); //Cam static animation
             animations[4].inWorld = false; //Cam static shouldnt be affected by camera position
+            animations[1].holdLastFrame = true;
+            animations[2].holdLastFrame = true;
         }
 
         ~DisplayManager(){
@@ -59,6 +67,15 @@ class DisplayManager{
             UnloadTexture(officeLeftLightBG);
             UnloadTexture(officeRightLightBG);
             UnloadTexture(camBar);
+            for (Texture t : menuScreens){
+                UnloadTexture(t);
+            }
+            for (Texture t : cameraScreens){
+                UnloadTexture(t);
+            }
+            for (Texture t : menuText){
+                UnloadTexture(t);
+            }
             StopSound(fanNoise);
             StopSound(boopNoise);
             StopSound(camOpeningNoise);
@@ -138,6 +155,7 @@ class DisplayManager{
                         animations[3].isReverse = false;
                         PlaySound(camOpeningNoise);
                         animations[3].Play();
+                        staticPlayed = false;
                     }
                     wantToSwap = true;
                 }
@@ -157,7 +175,6 @@ class DisplayManager{
 
             if (animations[3].playing == false && wantToSwap){
                 animations[0].Stop();
-                animations[2].Stop();
                 StopSound(fanNoise);
                 SetSoundVolume(officeAmbience[currentAmbience], 0.2); //Can still hear bg audio over cams but quieter
                 SetSoundVolume(stingers[currentStinger], 0.2);
@@ -193,18 +210,43 @@ class DisplayManager{
                 touchingCamButton = false;
             }
         }
-
+        
         void MenuUpdate(){
             if (IsSoundPlaying(menuMusic) == false){
                 SetSoundVolume(menuMusic, 0.3);
                 PlaySound(menuMusic);
             }
-
+            
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                StopSound(menuMusic);
-                animations[0].Play(true);
-                currentScreen = "office";
+                float scaleX = screenWidth / menuScreens[menuScreen].width;
+                float scaleY = screenHeight / menuScreens[menuScreen].height;
+                if (CheckCollisionPointRec(Vector2{float(GetMouseX()), float(GetMouseY())}, Rectangle{50, 100 + 50 + menuText[2].height*((scaleX < scaleY) ? scaleX : scaleY), menuText[1].width*scaleX, menuText[1].height*scaleY})){
+                    StopSound(menuMusic);
+                    animations[4].Stop();
+                    animations[4].opacity = 1.0f;
+                    animations[0].Play(true);
+                    currentScreen = "office";
+                }
+
             }
+        }
+        
+        void MenuDraw(){
+            //Scale texture to fit screen
+            float scaleX = screenWidth / menuScreens[menuScreen].width;
+            float scaleY = screenHeight / menuScreens[menuScreen].height;
+            DrawTextureEx(menuScreens[menuScreen], Vector2{0, 0}, 0.0f, (scaleX < scaleY) ? scaleX : scaleY, WHITE);
+            //Calculate the position below the title after scaling it to use as a reference for the button positions
+            Vector2 titlePos = Vector2{50, 50 + menuText[2].height*((scaleX < scaleY) ? scaleX : scaleY)};
+            DrawTextureEx(menuText[2], Vector2{50, 50}, 0.0f, (scaleX < scaleY) ? scaleX : scaleY, WHITE);
+            DrawTextureEx(menuText[3], Vector2{screenWidth*0.5f-(menuText[3].width*scaleX)*0.5f, screenHeight-(menuText[3].height*scaleY)}, 0.0f, (scaleX < scaleY) ? scaleX : scaleY, WHITE);
+
+            //Draw buttons
+            DrawTextureEx(menuText[1], Vector2{50, titlePos.y + 100}, 0.0f, (scaleX < scaleY) ? scaleX : scaleY, WHITE);
+
+            animations[4].scale = scaleX;
+            animations[4].opacity = 0.25f;
+            if (animations[4].playing == false){animations[4].Play();}
         }
 
         void OfficeDraw(){
@@ -240,26 +282,20 @@ class DisplayManager{
             //scale camera static to fit screen
             float scaleX = screenWidth / 1280; //magic number bad but 1280x720 is the resolution the static was made in
             animations[4].scale = scaleX;
-
-            if (animations[4].playing == false && animations[3].playing == false){
-                animations[4].Play(true);
+            if (staticPlayed == false && animations[3].playing == false){
+                animations[4].Play();
+                staticPlayed = true;
             }
-        }
-
-        void MenuDraw(){
-            //Scale texture to fit screen
-            float scaleX = screenWidth / menuScreens[menuScreen].width;
-            float scaleY = screenHeight / menuScreens[menuScreen].height;
-            DrawTextureEx(menuScreens[menuScreen], Vector2{0, 0}, 0.0f, (scaleX < scaleY) ? scaleX : scaleY, WHITE);
-            //Scale text to fit screen aswell
-            DrawTextEx(GetFontDefault(), "Click to start", Vector2{150.0f - MeasureText("Click to start", 40)/2, screenHeight/2}, 40 * ((scaleX < scaleY) ? scaleX : scaleY), 2, WHITE);
-            //Dont really like the text and the way it looks but the functionality is half there. Gotta wait until nights are working and ai is in to make a better menu
-            //Also in the future would like to add options menu and stuff but for now this is fine
+            
+            camera->target = Vector2{0, 0};
+            BeginMode2D(*camera);
+            DrawTexture(cameraScreens[0], 0, 0, WHITE);
+            EndMode2D();
         }
 
         void Update(){
             //randomly play spooky sounds
-            if (GetRandomValue(0, GetFPS()*60) == 1){
+            if (GetRandomValue(0, GetFPS()*60) == 1 && (currentScreen == "office" || currentScreen == "cameras")){
                 currentStinger = GetRandomValue(0, stingers.size()-1);
                 PlaySound(stingers[currentStinger]);
             }

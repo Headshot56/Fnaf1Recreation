@@ -18,6 +18,8 @@ class Animation {
         bool playing = true;
         bool isReverse = false;
         bool inWorld = true;
+        bool holdLastFrame = false;
+        float opacity = 1.0f;
         Vector2 position;
         std::vector<Texture2D> frames;
 
@@ -48,6 +50,7 @@ class Animation {
                 if (currentDrawFrameIndex >= frameCount) { // At end of animation
                     if (isLooping == false) {
                         currentDrawFrameIndex = frameCount - 1; // Stay on the last frame
+                        if (holdLastFrame == false){playing = false;}
                         return true;
                     }
                     currentDrawFrameIndex = 0; // Reset to first frame
@@ -68,13 +71,14 @@ class Animation {
         }
 
         void Draw() {
+            Color drawColor = ColorAlpha(WHITE, opacity);
             if (!playing){return;}
             if (inWorld){BeginMode2D(*camera);}
             if (isReverse == false){
-                DrawTextureEx(frames.at(currentDrawFrameIndex), Vector2{position.x, position.y}, rotation, scale, WHITE);
+                DrawTextureEx(frames.at(currentDrawFrameIndex), Vector2{position.x, position.y}, rotation, scale, drawColor);
             }
             else{
-                DrawTextureEx(frames.at(frameCount-1 - currentDrawFrameIndex), Vector2{position.x, position.y}, rotation, scale, WHITE);
+                DrawTextureEx(frames.at(frameCount-1 - currentDrawFrameIndex), Vector2{position.x, position.y}, rotation, scale, drawColor);
             }
             if (inWorld){EndMode2D();}
         }

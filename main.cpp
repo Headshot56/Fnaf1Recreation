@@ -3,6 +3,7 @@ float screenHeight = 720;
 float zoomFactorX;
 float zoomFactorY;
 #include <raylib.h>
+#include "Ai.hpp"
 #include "DisplayManager.hpp"
 int aspectFactor = screenWidth/16;
 
